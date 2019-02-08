@@ -19,13 +19,13 @@ public class SQLiteOps{
 			connection.setAutoCommit(false);
 			Statement statement = connection.createStatement();
 			//statement.setQueryTimeout(30);
-			statement.execute("CREATE TABLE IF NOT EXISTS GAMES (\n" +
-							  "GAME_ID  INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-							  "PLAYER   VARCHAR,\n" +
-							  "OPPONENT VARCHAR,\n" +
+			statement.execute("CREATE TABLE IF NOT EXISTS COPPA (\n" +
+							  "COPPA_ID INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,\n" +
+							  "PLAYER   VARCHAR (30),\n" +
+							  "OPPONENT VARCHAR (30),\n" +
 							  "GF       INTEGER,\n" +
 							  "GS       INTEGER,\n" +
-							  "TYPE     VARCHAR NOT NULL\n" +
+							  "TYPE     VARCHAR (1) NOT NULL\n" +
 							  ");");
 	    }catch(SQLException e){
 	    	System.err.println(e.getMessage());

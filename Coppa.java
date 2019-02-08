@@ -18,14 +18,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 
-public class SubChamp{
+public class Coppa{
 	
 	public String imPath = "./images/";
 	public String[] A = {"Stefano", "Mamma", "Gabriele"};
 	public String[] B = {"Angelo", "Papà", "Michele"};
-	public static String db = "games.db";
+	public static String db = "coppa.db";
     
-    public void SubChampGUI(){
+    public void CoppaGUI(){
     	
         JFrame main_window = new JFrame("CHAMPIONS SUBBUTEO");
         main_window.setContentPane(new JLabel(new ImageIcon(imPath + "campo.png")));
@@ -80,7 +80,7 @@ public class SubChamp{
         text.setBounds(995,312,120,50);
         main_window.add(text);
         //########################################################################TABELLA GIRONE A
-        JLabel lblGironeA = new GUIcompon().LabelContainer("GIRONE A");
+        /*JLabel lblGironeA = new GUIcompon().LabelContainer("GIRONE A");
         lblGironeA.setBounds(155,440,100,30);
         main_window.add(lblGironeA);
         //Classifica girone A
@@ -96,9 +96,9 @@ public class SubChamp{
         JTextField[] resA = new GUIcompon().Results(176, 565);
         for(int i = 0; i < resA.length; i++){
         	main_window.add(resA[i]);
-        }
+        }*/
         //########################################################################TABELLA GIRONE B
-        JLabel lblGironeB = new GUIcompon().LabelContainer("GIRONE B");
+        /*JLabel lblGironeB = new GUIcompon().LabelContainer("GIRONE B");
         lblGironeB.setBounds(895,440,100,30);
         main_window.add(lblGironeB);
         //Classifica girone B
@@ -114,25 +114,31 @@ public class SubChamp{
         JTextField[] resB = new GUIcompon().Results(914, 565);
         for(int i = 0; i < resB.length; i++){
         	main_window.add(resB[i]);
-        }
+        }*/
         //########################################################################SEMIFINALE 1
         JLabel lbl = new GUIcompon().LabelContainer("SEMIFINALE 1");
-        lbl.setBounds(375,550,140,20);
+        lbl.setBounds((685+375)/2-(140/2),570-20,140,20);
         main_window.add(lbl);
         JTextPane txtSemi11 = new GUIcompon().TableContainer();
         txtSemi11.setBounds(375,570,140,25);
         main_window.add(txtSemi11);
         JTextPane txtSemi12 = new GUIcompon().TableContainer();
-        txtSemi12.setBounds(375,595,140,25);
+        txtSemi12.setBounds(515,570,140,25);
         main_window.add(txtSemi12);
         JTextField res11 = new GUIcompon().ResContainer();
-        res11.setBounds(515,570,30,25);
+        res11.setBounds(345,570,30,25);
         main_window.add(res11);
         JTextField res12 = new GUIcompon().ResContainer();
-        res12.setBounds(515,595,30,25);
+        res12.setBounds(315,570,30,25);
         main_window.add(res12);
+        JTextField res123 = new GUIcompon().ResContainer();
+        res123.setBounds(655,570,30,25);
+        main_window.add(res123);
+        JTextField res1234 = new GUIcompon().ResContainer();
+        res1234.setBounds(685,570,30,25);
+        main_window.add(res1234);
         //########################################################################SEMIFINALE 2
-        lbl = new GUIcompon().LabelContainer("SEMIFINALE 2");
+        /*lbl = new GUIcompon().LabelContainer("SEMIFINALE 2");
         lbl.setBounds(635,550,140,20);
         main_window.add(lbl);
         JTextPane txtSemi21 = new GUIcompon().TableContainer();
@@ -146,9 +152,9 @@ public class SubChamp{
         main_window.add(res21);
         JTextField res22 = new GUIcompon().ResContainer();
         res22.setBounds(605,595,30,25);
-        main_window.add(res22);
+        main_window.add(res22);*/
         //########################################################################FINALE
-        lbl = new GUIcompon().LabelContainer("FINALE");
+        /*lbl = new GUIcompon().LabelContainer("FINALE");
         lbl.setBounds(445,475,260,20);
         main_window.add(lbl);
         JTextPane txtFin1 = new GUIcompon().TableContainer();
@@ -162,13 +168,13 @@ public class SubChamp{
         main_window.add(res1);
         JTextField res2 = new GUIcompon().ResContainer();
         res2.setBounds(575,495,30,25);
-        main_window.add(res2);
+        main_window.add(res2);*/
         //########################################################################BOTTONE AGGIORNA
         JButton btnRefresh = new JButton("AGGIORNA");
         btnRefresh.setBounds(525,740,100,30);
         main_window.getRootPane().setDefaultButton(btnRefresh);
         main_window.add(btnRefresh);
-        btnRefresh.addActionListener(new ActionListener(){
+        /*btnRefresh.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
             	boolean check = new ResultsOps().ResChecks(resA, resB, res11, res12, res21, res22, txtSemi11, txtSemi12,
             											   txtSemi21, txtSemi22, res1, res2, txtFin1, txtFin2);
@@ -200,7 +206,7 @@ public class SubChamp{
 					}
             	}
             }
-        });
+        });*/
         //########################################################################MAIN_WINDOW SETTINGS
         main_window.setResizable(false);
         main_window.setLayout(null);
@@ -208,7 +214,7 @@ public class SubChamp{
         main_window.setSize(1150,800);
         main_window.setVisible(true);
         //########################################################################CARICAMENTO DATI ALL'APERTURA
-		try{
+		/*try{
 			Connection firstConn = new SQLiteOps().SQLconn(db);
 	        new SQLiteOps().LoadData(firstConn, resA, A, resB, B, txtSemi11, txtSemi12, txtSemi21, txtSemi22,
 	        						 res11, res12, res21, res22, txtFin1, txtFin2, res1, res2);
@@ -217,11 +223,11 @@ public class SubChamp{
 	    	new SQLiteOps().CloseCnt(firstConn);
 		}catch (Exception e1){
 			e1.printStackTrace();
-		}
+		}*/
     }
     
     public static void main(String[] args){
-    	new SubChamp().SubChampGUI();
+    	new Coppa().CoppaGUI();
     }
     
 }
