@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Image;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -93,6 +94,46 @@ public class GUIcompon{
 		mtch[3] = mtch4; mtch[4] = mtch5; mtch[5] = mtch6;
 		new ResultsOps().SetMatches(players, mtch);
 		return mtch;
+	}
+	
+	public JTextField[] MatchBox(JFrame MW, int left, int height, String player1, String player2, String title){
+		int box_height = 25;
+		int txt_len = 140;
+		int res_len = 30;
+		int title_height = box_height - 5;
+		if(!title.isEmpty()){
+			JLabel lbl = new GUIcompon().LabelContainer(title);
+			lbl.setBounds(left+2*res_len, height-title_height, 2*txt_len, title_height);
+			MW.add(lbl);
+			JLabel lblA = new GUIcompon().LabelContainer("A");
+			lblA.setBounds(left, height-title_height, 2*res_len, title_height);
+			MW.add(lblA);
+			JLabel lblR = new GUIcompon().LabelContainer("R");
+			lblR.setBounds(left+2*res_len+2*txt_len, height-title_height, 2*res_len, title_height);
+			MW.add(lblR);
+		}
+        JTextPane txt1 = TableContainer();
+        txt1.setBounds(left+2*res_len, height, txt_len, box_height);
+        MW.add(txt1);
+        JTextPane txt2 = TableContainer();
+        txt2.setBounds(left+2*res_len+txt_len, height, txt_len, box_height);
+        MW.add(txt2);
+        JTextField[] ARres = new JTextField[4];
+        JTextField Ares1 = ResContainer();
+        Ares1.setBounds(left, height, res_len, box_height);
+        MW.add(Ares1);
+        JTextField Ares2 = ResContainer();
+        Ares2.setBounds(left+res_len, height, res_len, box_height);
+        MW.add(Ares2);
+        JTextField Rres1 = ResContainer();
+        Rres1.setBounds(left+2*res_len+2*txt_len, height, res_len, box_height);
+        MW.add(Rres1);
+        JTextField Rres2 = ResContainer();
+        Rres2.setBounds(left+3*res_len+2*txt_len, height, res_len, box_height);
+        MW.add(Rres2);
+        ARres[0] = Ares1; ARres[1] = Ares2;
+        ARres[2] = Rres1; ARres[3] = Rres2;
+        return ARres;
 	}
 	
 }

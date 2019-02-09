@@ -27,10 +27,10 @@ public class Coppa{
     
     public void CoppaGUI(){
     	
-        JFrame main_window = new JFrame("CHAMPIONS SUBBUTEO");
+        JFrame main_window = new JFrame("COPPA ITALIA SUBBUTEO");
         main_window.setContentPane(new JLabel(new ImageIcon(imPath + "campo.png")));
         //########################################################################champions logo
-        JLabel picLabel = new JLabel(new GUIcompon().ResizeImg(imPath, "champions.png", 200, 150));
+        /*JLabel picLabel = new JLabel(new GUIcompon().ResizeImg(imPath, "champions.png", 200, 150));
         picLabel.setBounds(475,5,200,150);
         main_window.add(picLabel);
         //########################################################################champions cup
@@ -78,7 +78,7 @@ public class Coppa{
         main_window.add(picLabel);
         text = new GUIcompon().PlayerName("Mamma", Color.CYAN);
         text.setBounds(995,312,120,50);
-        main_window.add(text);
+        main_window.add(text);*/
         //########################################################################TABELLA GIRONE A
         /*JLabel lblGironeA = new GUIcompon().LabelContainer("GIRONE A");
         lblGironeA.setBounds(155,440,100,30);
@@ -115,60 +115,24 @@ public class Coppa{
         for(int i = 0; i < resB.length; i++){
         	main_window.add(resB[i]);
         }*/
-        //########################################################################SEMIFINALE 1
-        JLabel lbl = new GUIcompon().LabelContainer("SEMIFINALE 1");
-        lbl.setBounds((685+375)/2-(140/2),570-20,140,20);
-        main_window.add(lbl);
-        JTextPane txtSemi11 = new GUIcompon().TableContainer();
-        txtSemi11.setBounds(375,570,140,25);
-        main_window.add(txtSemi11);
-        JTextPane txtSemi12 = new GUIcompon().TableContainer();
-        txtSemi12.setBounds(515,570,140,25);
-        main_window.add(txtSemi12);
-        JTextField res11 = new GUIcompon().ResContainer();
-        res11.setBounds(345,570,30,25);
-        main_window.add(res11);
-        JTextField res12 = new GUIcompon().ResContainer();
-        res12.setBounds(315,570,30,25);
-        main_window.add(res12);
-        JTextField res123 = new GUIcompon().ResContainer();
-        res123.setBounds(655,570,30,25);
-        main_window.add(res123);
-        JTextField res1234 = new GUIcompon().ResContainer();
-        res1234.setBounds(685,570,30,25);
-        main_window.add(res1234);
-        //########################################################################SEMIFINALE 2
-        /*lbl = new GUIcompon().LabelContainer("SEMIFINALE 2");
-        lbl.setBounds(635,550,140,20);
-        main_window.add(lbl);
-        JTextPane txtSemi21 = new GUIcompon().TableContainer();
-        txtSemi21.setBounds(635,570,140,25);
-        main_window.add(txtSemi21);
-        JTextPane txtSemi22 = new GUIcompon().TableContainer();
-        txtSemi22.setBounds(635,595,140,25);
-        main_window.add(txtSemi22);
-        JTextField res21 = new GUIcompon().ResContainer();
-        res21.setBounds(605,570,30,25);
-        main_window.add(res21);
-        JTextField res22 = new GUIcompon().ResContainer();
-        res22.setBounds(605,595,30,25);
-        main_window.add(res22);*/
+        //########################################################################SPAREGGI
+        JTextField[] resSpareggio1 = new GUIcompon().MatchBox(main_window, 95, 110, "", "", "SPAREGGI");
+        JTextField[] resSpareggio2 = new GUIcompon().MatchBox(main_window, 95, 135, "", "", "");
+        //########################################################################GIRONE
+        int startX = 375;
+        int startY = 250;
+        int yHeight = 25;
+        JTextField[] resGirone1 = new GUIcompon().MatchBox(main_window, startX, startY, "", "", "GIRONE PRINCIPALE");
+        JTextField[] resGirone2 = new GUIcompon().MatchBox(main_window, startX, startY+yHeight, "", "", "");
+        JTextField[] resGirone3 = new GUIcompon().MatchBox(main_window, startX, startY+2*yHeight, "", "", "");
+        JTextField[] resGirone4 = new GUIcompon().MatchBox(main_window, startX, startY+3*yHeight, "", "", "");
+        JTextField[] resGirone5 = new GUIcompon().MatchBox(main_window, startX, startY+4*yHeight, "", "", "");
+        JTextField[] resGirone6 = new GUIcompon().MatchBox(main_window, startX, startY+5*yHeight, "", "", "");
+        JTextPane Table = new GUIcompon().TableContainer();
+        Table.setBounds(startX, startY+6*yHeight, 4*30+2*140, 4*yHeight);
+        main_window.add(Table);
         //########################################################################FINALE
-        /*lbl = new GUIcompon().LabelContainer("FINALE");
-        lbl.setBounds(445,475,260,20);
-        main_window.add(lbl);
-        JTextPane txtFin1 = new GUIcompon().TableContainer();
-        txtFin1.setBounds(445,495,100,25);
-        main_window.add(txtFin1);
-        JTextPane txtFin2 = new GUIcompon().TableContainer();
-        txtFin2.setBounds(605,495,100,25);
-        main_window.add(txtFin2);
-        JTextField res1 = new GUIcompon().ResContainer();
-        res1.setBounds(545,495,30,25);
-        main_window.add(res1);
-        JTextField res2 = new GUIcompon().ResContainer();
-        res2.setBounds(575,495,30,25);
-        main_window.add(res2);*/
+        JTextField[] resFinale = new GUIcompon().MatchBox(main_window, 655, 640, "", "", "FINALE");
         //########################################################################BOTTONE AGGIORNA
         JButton btnRefresh = new JButton("AGGIORNA");
         btnRefresh.setBounds(525,740,100,30);
