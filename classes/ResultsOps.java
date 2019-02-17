@@ -2,6 +2,9 @@ package classes;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
@@ -11,6 +14,15 @@ public class ResultsOps{
 		pane.setContentType("text/html");
 		pane.setText("<html><font face=\"Serif\" ><table style=\"width:100%\"; align=\"center\">" +
 				     "<tr><td align=\"center\">" + player + "</td></table></font></html>");
+	}
+	
+	public String NoHtmlText(String HTMLtxt, String tag){
+		String toSearch = "<"+tag+".*>\\s*(.*)\\s*</"+tag+">";
+		System.out.println(toSearch);
+        Matcher matcher = Pattern.compile(toSearch).matcher(HTMLtxt);
+        if(matcher.find())
+        	return matcher.group(1);
+        throw new IllegalArgumentException("Match not found");
 	}
 	
 	public void EmptyPlayer(JTextPane pane){

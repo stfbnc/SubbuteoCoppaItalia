@@ -10,44 +10,98 @@ import javax.swing.JTextPane;
 
 public class SQLiteOps{
 	
-	public Connection SQLconn(String dbName) throws Exception{
+	public Connection SQLconn(String dbName) throws SQLException{
 		//Class.forName("org.sqlite.JDBC");
 		Connection connection = null;
-		try{
-			//connection = DriverManager.getConnection("jdbc:sqlite::resource:" + dbName);
-			connection = DriverManager.getConnection("jdbc:sqlite:" + dbName);
-			connection.setAutoCommit(false);
-			Statement statement = connection.createStatement();
-			//statement.setQueryTimeout(30);
-			statement.execute("CREATE TABLE IF NOT EXISTS COPPA (\n" +
-							  "COPPA_ID INTEGER      PRIMARY KEY AUTOINCREMENT NOT NULL,\n" +
-							  "PLAYER   VARCHAR (30),\n" +
-							  "OPPONENT VARCHAR (30),\n" +
-							  "GF       INTEGER,\n" +
-							  "GS       INTEGER,\n" +
-							  "TYPE     VARCHAR (1) NOT NULL\n" +
-							  ");");
-	    }catch(SQLException e){
-	    	System.err.println(e.getMessage());
-	    }
+		//try{
+		//connection = DriverManager.getConnection("jdbc:sqlite::resource:" + dbName);
+		connection = DriverManager.getConnection("jdbc:sqlite:" + dbName);
+		connection.setAutoCommit(false);
+		Statement statement = connection.createStatement();
+		//statement.setQueryTimeout(30);
+		statement.execute("CREATE TABLE IF NOT EXISTS COPPA (\n" +
+						  "COPPA_ID INTEGER     PRIMARY KEY AUTOINCREMENT NOT NULL,\n" +
+						  "PLAYER   VARCHAR (30),\n" +
+						  "OPPONENT VARCHAR (30),\n" +
+						  "GF_A     INTEGER,\n" +
+						  "GS_A     INTEGER,\n" +
+						  "TYPE     VARCHAR (1) NOT NULL,\n" +
+						  "GF_R     INTEGER,\n" +
+						  "GS_R     INTEGER,\n" +
+						  "N_MATCH  INTEGER     NOT NULL\n" +
+						  ");");
+	    //}catch(SQLException e){
+	    //	System.err.println(e.getMessage());
+	    //}
 		return connection;
 	}
 	
-	public void CloseCnt(Connection cnt){
-		try{
+	public void CloseCnt(Connection cnt) throws SQLException{
+		//try{
         	if(cnt != null)
         		cnt.commit();
         		cnt.close();
-        }catch(SQLException e){          
-           System.err.println(e); 
-        }
+        //}catch(SQLException e){          
+        //   System.err.println(e);
+        //}
+	}
+	
+	public String[] GetPlayers(Connection cnt, String type, int n_match) throws SQLException{
+		String[] players = {"",""};
+		//try{
+			Statement stmt = cnt.createStatement();
+			String query;
+			ResultSet rs;
+			query = "SELECT PLAYER, OPPONENT FROM COPPA WHERE TYPE = '" + type + "' AND N_MATCH = '" + n_match + "'";
+			rs = stmt.executeQuery(query);
+			while(rs.next()){
+				if(rs.getString("PLAYER") != null && !rs.getString("PLAYER").isEmpty())
+					players[0] = rs.getString("PLAYER");
+				if(rs.getString("OPPONENT") != null && !rs.getString("OPPONENT").isEmpty())
+					players[1] = rs.getString("OPPONENT");
+			}
+		//}catch(SQLException e){          
+	    //       System.err.println(e); 
+	    //}
+			return players;
+	}
+	
+	public String[] GetResults(Connection cnt, String type, int n_match) throws SQLException{
+		String[] res = {"","","",""};
+		//try{
+			Statement stmt = cnt.createStatement();
+			String query;
+			ResultSet rs;
+			query = "SELECT GF_A, GS_A, GF_R, GS_R FROM COPPA WHERE TYPE = '" + type + "' AND N_MATCH = '" + n_match + "'";
+			rs = stmt.executeQuery(query);
+			while(rs.next()){
+				if(rs.getString("GF_A") != null && !rs.getString("GF_A").isEmpty())
+					res[0] = rs.getString("GF_A");
+				if(rs.getString("GS_A") != null && !rs.getString("GS_A").isEmpty())
+					res[1] = rs.getString("GS_A");
+				if(rs.getString("GF_R") != null && !rs.getString("GF_R").isEmpty())
+					res[2] = rs.getString("GF_R");
+				if(rs.getString("GS_R") != null && !rs.getString("GS_R").isEmpty())
+					res[3] = rs.getString("GS_R");
+			}
+		//}catch(SQLException e){          
+	    //       System.err.println(e); 
+	    //}
+			return res;
+	}
+	
+	public void UpdateDbRow(Connection cnt, String pl1, String pl2, String res1, String res2,
+							String res3, String res4, String type, int n_match) throws SQLException{
+		Statement stmt = cnt.createStatement();
+		stmt.executeUpdate("UPDATE COPPA SET PLAYER='"+pl1+"',OPPONENT='"+pl2+"',GF_A='"+res1+"',GS_A='"+res2+"',GF_R='"+res3+"',"
+				+ "GS_R='"+res4+"' WHERE TYPE='"+type+"' AND N_MATCH='"+n_match+"'");
 	}
 	
 	public void LoadData(Connection cnt, JTextField[] jtfGroupA, String[] playersA, JTextField[] jtfGroupB, String[] playersB,
             			 JTextPane sm11Txt, JTextPane sm12Txt, JTextPane sm21Txt, JTextPane sm22Txt,
             			 JTextField sm11Fld, JTextField sm12Fld, JTextField sm21Fld, JTextField sm22Fld,
-            			 JTextPane fin1Txt, JTextPane fin2Txt, JTextField fin1Fld, JTextField fin2Fld){
-		try{
+            			 JTextPane fin1Txt, JTextPane fin2Txt, JTextField fin1Fld, JTextField fin2Fld) throws SQLException{
+		//try{
 			Statement stmt  = cnt.createStatement();
 			String query;
 			ResultSet rs;
@@ -103,13 +157,13 @@ public class SQLiteOps{
 				if(rs.getString("GS") != null)
 					fin2Fld.setText(rs.getString("GS"));
 			}
-		}catch(SQLException e){          
-	           System.err.println(e); 
-	    }
+		//}catch(SQLException e){          
+	    //       System.err.println(e); 
+	    //}
 	}
 	
-	public void SQLgroup(Connection cnt, JTextField[] group, String[] players, String type){
-		try{
+	public void SQLgroup(Connection cnt, JTextField[] group, String[] players, String type) throws SQLException{
+		//try{
 			Statement stmt = cnt.createStatement();
 			for(int i = 0; i < (group.length / 2); i++){
 				String query = "SELECT * FROM GAMES WHERE PLAYER = '" + players[i] + "' AND TYPE = '" + type + "'";
@@ -132,14 +186,14 @@ public class SQLiteOps{
 					}
 				}
 			}
-		}catch(SQLException e){
-	    	System.err.println(e.getMessage());
-	    }
+		//}catch(SQLException e){
+	    //	System.err.println(e.getMessage());
+	    //}
 	}
 	
-	public String[][] ExtractPlayersVal(Connection cnt, String[] players){
+	public String[][] ExtractPlayersVal(Connection cnt, String[] players) throws SQLException{
 		String[][] LeagueTbl = new String[players.length][8];
-		try{
+		//try{
 			Statement stmt  = cnt.createStatement();
 			String query;
 			ResultSet rs;
@@ -182,17 +236,17 @@ public class SQLiteOps{
 				LeagueTbl[i][6] = String.valueOf(gf);
 				LeagueTbl[i][7] = String.valueOf(gs);
 			}
-		}catch(SQLException e){
-	    	System.err.println(e.getMessage());
-	    }
+		//}catch(SQLException e){
+	    //	System.err.println(e.getMessage());
+	    //}
 		return LeagueTbl;
 	}
 	
 	public void SQLsemiPlayers(Connection cnt, String[] semiPlayers, JTextPane semi1, JTextPane semi2,
-							   JTextField s1, JTextField s2, String type1, String type2){
+							   JTextField s1, JTextField s2, String type1, String type2) throws SQLException{
 		new ResultsOps().SetPlayer(semi1, semiPlayers[0]);
 		new ResultsOps().SetPlayer(semi2, semiPlayers[1]);
-		try{
+		//try{
 			Statement stmt = cnt.createStatement();
 			String query;
 			ResultSet rs;
@@ -213,14 +267,14 @@ public class SQLiteOps{
 				stmt.executeUpdate("UPDATE GAMES SET GS = '" + s2.getText() + "' WHERE TYPE = '" + type2 + "'");
 			else
 				stmt.executeUpdate("UPDATE GAMES SET GS = NULL WHERE TYPE = '" + type2 + "'");	
-		}catch(SQLException e){
-	    	System.err.println(e.getMessage());
-	    }
+		//}catch(SQLException e){
+	    //	System.err.println(e.getMessage());
+	    //}
 	}
 	
 	public void UpdateSemi(Connection cnt, String type1, String type2, JTextPane p1, JTextPane p2,
-			               JTextField f1, JTextField f2, JTextField f3, JTextField f4){
-		try{
+			               JTextField f1, JTextField f2, JTextField f3, JTextField f4) throws SQLException{
+		//try{
 			Statement stmt = cnt.createStatement();
 			String query;
 			ResultSet rs;
@@ -238,13 +292,13 @@ public class SQLiteOps{
 				f3.setText("");
 				f4.setText("");
 			}
-		}catch(SQLException e){
-	    	System.err.println(e.getMessage());
-	    }
+		//}catch(SQLException e){
+	    //	System.err.println(e.getMessage());
+	    //}
 	}
 	
-	public void UpdateFin(Connection cnt, JTextPane p3, JTextPane p4, JTextField f5, JTextField f6){
-		try {
+	public void UpdateFin(Connection cnt, JTextPane p3, JTextPane p4, JTextField f5, JTextField f6) throws SQLException{
+		//try {
 			Statement stmt = cnt.createStatement();
 			String query;
 			ResultSet rs;
@@ -260,14 +314,14 @@ public class SQLiteOps{
 				f5.setText("");
 				f6.setText("");
 			}
-		}catch(SQLException e){
-	    	System.err.println(e.getMessage());
-	    }
+		//}catch(SQLException e){
+	    //	System.err.println(e.getMessage());
+	    //}
 	}
 	
-	public String[] getFinPlayers(Connection cnt){
+	public String[] getFinPlayers(Connection cnt) throws SQLException{
 		String[] plF = {"", ""};
-		try{
+		//try{
 			Statement stmt = cnt.createStatement();
 			String query;
 			ResultSet rs;
@@ -291,13 +345,13 @@ public class SQLiteOps{
 					plF[1] = rs.getString("OPPONENT");
 				}
 			}
-		}catch(SQLException e){
-	    	System.err.println(e.getMessage());
-	    }
+		//}catch(SQLException e){
+	    //	System.err.println(e.getMessage());
+	    //}
 		return plF;
 	}
 	
-	public void SQLfinPlayers(Connection cnt, JTextPane fin1, JTextPane fin2, JTextField f1, JTextField f2){
+	public void SQLfinPlayers(Connection cnt, JTextPane fin1, JTextPane fin2, JTextField f1, JTextField f2) throws SQLException{
 		String[] finPl = new SQLiteOps().getFinPlayers(cnt);
 		if(finPl[0] != "" && finPl[1] == ""){
 			new ResultsOps().SetPlayer(fin1, finPl[0]);
@@ -321,7 +375,7 @@ public class SQLiteOps{
 			f1.setText("");
 			f2.setText("");
 		}	
-		try{
+		//try{
 			Statement stmt = cnt.createStatement();
 			String query;
 			ResultSet rs;
@@ -359,9 +413,9 @@ public class SQLiteOps{
 				stmt.executeUpdate("UPDATE GAMES SET GF = NULL WHERE TYPE = 'FIN'");
 				stmt.executeUpdate("UPDATE GAMES SET GS = NULL WHERE TYPE = 'FIN'");
 			}
-		}catch(SQLException e){
-	    	System.err.println(e.getMessage());
-	    }
+		//}catch(SQLException e){
+	    //	System.err.println(e.getMessage());
+	    //}
 	}
 
 }
