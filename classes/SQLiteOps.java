@@ -90,11 +90,16 @@ public class SQLiteOps{
 			return res;
 	}
 	
-	public void UpdateDbRow(Connection cnt, String pl1, String pl2, String res1, String res2,
-							String res3, String res4, String type, int n_match) throws SQLException{
+	public void UpdateDbRow(Connection cnt, JTextPane[] Jtxt, JTextField[] Jres, String type, int n_match) throws SQLException{
 		Statement stmt = cnt.createStatement();
+		String pl1 = new ResultsOps().NoHtmlText(Jtxt[0].getText(), "td");
+		String pl2 = new ResultsOps().NoHtmlText(Jtxt[1].getText(), "td");
+		String res1 = Jres[0].getText();
+		String res2 = Jres[1].getText();
+		String res3 = Jres[2].getText();
+		String res4 = Jres[3].getText();
 		stmt.executeUpdate("UPDATE COPPA SET PLAYER='"+pl1+"',OPPONENT='"+pl2+"',GF_A='"+res1+"',GS_A='"+res2+"',GF_R='"+res3+"',"
-				+ "GS_R='"+res4+"' WHERE TYPE='"+type+"' AND N_MATCH='"+n_match+"'");
+				+"GS_R='"+res4+"' WHERE TYPE='"+type+"' AND N_MATCH='"+n_match+"'");
 	}
 	
 	public void LoadData(Connection cnt, JTextField[] jtfGroupA, String[] playersA, JTextField[] jtfGroupB, String[] playersB,
