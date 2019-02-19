@@ -39,56 +39,29 @@ public class ResultsOps{
 		new ResultsOps().SetPlayer(pane[5], group[0]);
 	}
 	
-	public boolean ResChecks(JTextField[] Ares, JTextField[] Bres, JTextField semi11, JTextField semi12,
-                 			 JTextField semi21, JTextField semi22, JTextPane p11, JTextPane p12,
-                 			 JTextPane p21, JTextPane p22, JTextField fin1, JTextField fin2,
-                 			 JTextPane f1, JTextPane f2){
+	public boolean ResChecks(JTextField[] res, JTextPane[] players){
 		boolean chk = true;
-		//check for a single empty value in a match
-		for(int i = 0; i < (Ares.length / 2); i++){
-			if((Ares[i].getText().isEmpty()) ^ (Ares[i + (Ares.length / 2)].getText().isEmpty()))
+		//check for a single empty value in a result couple
+		for(int i = 0; i < res.length; i += 2){
+			String res1 = res[i].getText();
+			String res2 = res[i+1].getText();
+			if((res1.isEmpty() || res1 == "") ^ (res2.isEmpty() || res2 == ""))
 				chk = false;
 		}
-		for(int i = 0; i < (Bres.length / 2); i++){
-			if((Bres[i].getText().isEmpty()) ^ (Bres[i + (Bres.length / 2)].getText().isEmpty()))
-				chk = false;
-		}
-		if((semi11.getText().isEmpty() || semi11.getText() == "") ^ (semi12.getText().isEmpty() || semi12.getText() == ""))
-			chk = false;
-		if(((!semi11.getText().isEmpty() && semi11.getText() != "") && (!semi12.getText().isEmpty() && semi12.getText() != ""))
-			&& ((p11.getText().isEmpty() || p11.getText() == "") || (p12.getText().isEmpty() || p12.getText() == "")))
-			chk = false;
-		if((semi21.getText().isEmpty() || semi21.getText() == "") ^ (semi22.getText().isEmpty() || semi22.getText() == ""))
-			chk = false;
-		if(((!semi21.getText().isEmpty() && semi21.getText() != "") && (!semi22.getText().isEmpty() && semi22.getText() != ""))
-			&& ((p21.getText().isEmpty() || p21.getText() == "") || (p22.getText().isEmpty() || p22.getText() == "")))
-			chk = false;
-		if((fin1.getText().isEmpty() || fin1.getText() == "") ^ (fin2.getText().isEmpty() || fin2.getText() == ""))
-			chk = false;
-		if(((!fin1.getText().isEmpty() && fin1.getText() != "") && (!fin2.getText().isEmpty() && fin2.getText() != ""))
-			&& ((f1.getText().isEmpty() || f1.getText() == "") || (f2.getText().isEmpty() || f2.getText() == "")))
+		//check for a single empty value in a player couple
+		String pl1 = new ResultsOps().NoHtmlText(players[0], "td");
+		String pl2 = new ResultsOps().NoHtmlText(players[1], "td");
+		if((pl1.isEmpty() || pl1 == "") ^ (pl2.isEmpty() || pl2 == ""))
 			chk = false;
 		//check for non numeric strings
 		if(chk){
-			for(int i = 0; i < Ares.length; i++){
-				if(!Ares[i].getText().matches("^[0-9]+$") && !Ares[i].getText().isEmpty())
+			for(int i = 0; i < res.length; i++){
+				if(!res[i].getText().matches("^[0-9]+$") && !res[i].getText().isEmpty())
 					chk = false;
 			}
-			for(int i = 0; i < Bres.length; i++){
-				if(!Bres[i].getText().matches("^[0-9]+$") && !Bres[i].getText().isEmpty())
-					chk = false;
-			}
-			if(!semi11.getText().matches("^[0-9]+$") && !semi11.getText().isEmpty())
+			if(!pl1.matches("^[0-9]+$") && !pl1.isEmpty())
 				chk = false;
-			if(!semi12.getText().matches("^[0-9]+$") && !semi12.getText().isEmpty())
-				chk = false;
-			if(!semi21.getText().matches("^[0-9]+$") && !semi21.getText().isEmpty())
-				chk = false;
-			if(!semi22.getText().matches("^[0-9]+$") && !semi22.getText().isEmpty())
-				chk = false;
-			if(!fin1.getText().matches("^[0-9]+$") && !fin1.getText().isEmpty())
-				chk = false;
-			if(!fin2.getText().matches("^[0-9]+$") && !fin2.getText().isEmpty())
+			if(!pl2.matches("^[0-9]+$") && !pl2.isEmpty())
 				chk = false;
 		}
 		return chk;
