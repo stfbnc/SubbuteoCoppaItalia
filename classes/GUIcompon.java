@@ -22,10 +22,11 @@ public class GUIcompon{
         return imageIcon;
 	}
 	
-	public JTextPane TableContainer(){
+	public JTextPane TableContainer(boolean isEditable){
 		JTextPane pane = new JTextPane();
 		//pane.setFont(new Font("monospace",Font.PLAIN,16));
-        pane.setEditable(false);
+	if(!isEditable)
+        	pane.setEditable(false);
         pane.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(1.5f)));
         return pane;
 	}
@@ -45,7 +46,7 @@ public class GUIcompon{
         return label;
 	}
 	
-	public JTextField[] MatchResults(JFrame MW, int left, int height, String res1, String res2, String res3, String res4, int AorR){
+	public JTextField[] MatchResults(JFrame MW, int left, int height, String[] res, int AorR){
 		int box_height = 25;
 		int txt_len = 140;
 		int res_len = 30;
@@ -61,26 +62,26 @@ public class GUIcompon{
 		}
         JTextField Ares1 = ResContainer();
         Ares1.setBounds(left, height, res_len, box_height);
-        Ares1.setText(res1);
+        Ares1.setText(res[0]);
         MW.add(Ares1);
         JTextField Ares2 = ResContainer();
         Ares2.setBounds(left+res_len, height, res_len, box_height);
-        Ares2.setText(res2);
+        Ares2.setText(res[1]);
         MW.add(Ares2);
         JTextField Rres1 = ResContainer();
         Rres1.setBounds(left+2*res_len+2*txt_len, height, res_len, box_height);
-        Rres1.setText(res3);
+        Rres1.setText(res[2]);
         MW.add(Rres1);
         JTextField Rres2 = ResContainer();
         Rres2.setBounds(left+3*res_len+2*txt_len, height, res_len, box_height);
-        Rres2.setText(res4);
+        Rres2.setText(res[3]);
         MW.add(Rres2);
         ARres[0] = Ares1; ARres[1] = Ares2;
         ARres[2] = Rres1; ARres[3] = Rres2;
         return ARres;
 	}
 	
-	public JTextPane[] MatchPlayers(JFrame MW, int left, int height, String player1, String player2, String title){
+	public JTextPane[] MatchPlayers(JFrame MW, int left, int height, String[] players, String title){
 		int box_height = 25;
 		int txt_len = 140;
 		int res_len = 30;
@@ -91,13 +92,13 @@ public class GUIcompon{
 			lbl.setBounds(left+2*res_len, height-title_height, 2*txt_len, title_height);
 			MW.add(lbl);
 		}
-        JTextPane txt1 = TableContainer();
+        JTextPane txt1 = TableContainer(false);
         txt1.setBounds(left+2*res_len, height, txt_len, box_height);
-        new ResultsOps().SetPlayer(txt1, player1);
+        new ResultsOps().SetPlayer(txt1, players[0]);
         MW.add(txt1);
-        JTextPane txt2 = TableContainer();
+        JTextPane txt2 = TableContainer(false);
         txt2.setBounds(left+2*res_len+txt_len, height, txt_len, box_height);
-        new ResultsOps().SetPlayer(txt2, player2);
+        new ResultsOps().SetPlayer(txt2, players[1]);
         MW.add(txt2);
         texts[0] = txt1; texts[1] = txt2;
         return texts;
