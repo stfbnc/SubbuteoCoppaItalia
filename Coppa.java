@@ -42,8 +42,7 @@ public class Coppa{
         JFrame main_window = new JFrame("COPPA ITALIA SUBBUTEO");
         main_window.setContentPane(new JLabel(new GUIcompon().ResizeImg(imPath, "campo2.png", 1150, 800)));
         Connection conn = new SQLiteOps().SQLconn(db);
-	    
-	//CERCARE DI PRENDERE TUTTO QUESTO IN UN LOOP
+	
 	//CLASSIFICA DINAMICA CHE SI ALLARGA IN BASE AI GIOCATORI CHE TROVA (TIPO STRUCT)
 	    
         //########################################################################SPAREGGIO PRELIMINARE
@@ -109,46 +108,16 @@ public class Coppa{
             	//}else{
 			try{
             			Connection conn = new SQLiteOps().SQLconn(db);
-            			new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtSpareggioPrel[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtSpareggioPrel[1].getText(), "td"),
-            						resSpareggioPrel[0].getText(), resSpareggioPrel[1].getText(), resSpareggioPrel[2].getText(),
-            						resSpareggioPrel[3].getText(), dbTypes.get("SP_PREL"), 1);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtSpareggio1[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtSpareggio1[1].getText(), "td"),
-            						resSpareggio1[0].getText(), resSpareggio1[1].getText(), resSpareggio1[2].getText(),
-            						resSpareggio1[3].getText(), dbTypes.get("SPAR"), 1);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtSpareggio2[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtSpareggio2[1].getText(), "td"),
-            						resSpareggio2[0].getText(), resSpareggio2[1].getText(), resSpareggio2[2].getText(),
-            						resSpareggio2[3].getText(), dbTypes.get("SPAR"), 2);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtGirone1[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtGirone1[1].getText(), "td"),
-            						resGirone1[0].getText(), resGirone1[1].getText(), resGirone1[2].getText(),
-            						resGirone1[3].getText(), dbTypes.get("GIR"), 1);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtGirone2[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtGirone2[1].getText(), "td"),
-            						resGirone2[0].getText(), resGirone2[1].getText(), resGirone2[2].getText(),
-            						resGirone2[3].getText(), dbTypes.get("GIR"), 2);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtGirone3[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtGirone3[1].getText(), "td"),
-            						resGirone3[0].getText(), resGirone3[1].getText(), resGirone3[2].getText(),
-            						resGirone3[3].getText(), dbTypes.get("GIR"), 3);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtGirone4[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtGirone4[1].getText(), "td"),
-            						resGirone4[0].getText(), resGirone4[1].getText(), resGirone4[2].getText(),
-            						resGirone4[3].getText(), dbTypes.get("GIR"), 4);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtGirone5[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtGirone5[1].getText(), "td"),
-            						resGirone5[0].getText(), resGirone5[1].getText(), resGirone5[2].getText(),
-            						resGirone5[3].getText(), dbTypes.get("GIR"), 5);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtGirone6[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtGirone6[1].getText(), "td"),
-            						resGirone6[0].getText(), resGirone6[1].getText(), resGirone6[2].getText(),
-            						resGirone6[3].getText(), dbTypes.get("GIR"), 6);
-				new SQLiteOps().UpdateDbRow(conn, new ResultsOps().NoHtmlText(txtFinale[0].getText(), "td"),
-            						new ResultsOps().NoHtmlText(txtFinale[1].getText(), "td"),
-            						resFinale[0].getText(), resFinale[1].getText(), resFinale[2].getText(),
-            						resFinale[3].getText(), dbTypes.get("FIN"), 1);
+            			new SQLiteOps().UpdateDbRow(conn, txtSpareggioPrel, resSpareggioPrel, dbTypes.get("SP_PREL"), 1);
+				new SQLiteOps().UpdateDbRow(conn, txtSpareggio1, resSpareggio1, dbTypes.get("SPAR"), 1);
+				new SQLiteOps().UpdateDbRow(conn, txtSpareggio2, resSpareggio2, dbTypes.get("SPAR"), 2);
+				new SQLiteOps().UpdateDbRow(conn, txtGirone1, resGirone1, dbTypes.get("GIR"), 1);
+				new SQLiteOps().UpdateDbRow(conn, txtGirone2, resGirone2, dbTypes.get("GIR"), 2);
+				new SQLiteOps().UpdateDbRow(conn, txtGirone3, resGirone3, dbTypes.get("GIR"), 3);
+				new SQLiteOps().UpdateDbRow(conn, txtGirone4, resGirone4, dbTypes.get("GIR"), 4);
+				new SQLiteOps().UpdateDbRow(conn, txtGirone5, resGirone5, dbTypes.get("GIR"), 5);
+				new SQLiteOps().UpdateDbRow(conn, txtGirone6, resGirone6, dbTypes.get("GIR"), 6);
+				new SQLiteOps().UpdateDbRow(conn, txtFinale, resFinale, dbTypes.get("FIN"), 1);
 				//la classifica legge dal database
 	            		new SQLiteOps().CloseCnt(conn);
 			}catch (Exception e1){
