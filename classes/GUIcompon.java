@@ -25,7 +25,7 @@ public class GUIcompon{
 	public JTextPane TableContainer(boolean isEditable){
 		JTextPane pane = new JTextPane();
 		//pane.setFont(new Font("monospace",Font.PLAIN,16));
-	if(!isEditable)
+		if(!isEditable)
         	pane.setEditable(false);
         pane.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(1.5f)));
         return pane;
@@ -53,10 +53,10 @@ public class GUIcompon{
 		int title_height = box_height - 5;
 		JTextField[] ARres = new JTextField[4];
 		if(AorR == 1){
-			JLabel lblA = new GUIcompon().LabelContainer("A");
+			JLabel lblA = LabelContainer("A");
 			lblA.setBounds(left, height-title_height, 2*res_len, title_height);
 			MW.add(lblA);
-			JLabel lblR = new GUIcompon().LabelContainer("R");
+			JLabel lblR = LabelContainer("R");
 			lblR.setBounds(left+2*res_len+2*txt_len, height-title_height, 2*res_len, title_height);
 			MW.add(lblR);
 		}
@@ -88,15 +88,15 @@ public class GUIcompon{
 		int title_height = box_height - 5;
 		JTextPane[] texts = new JTextPane[2];
 		if(!title.isEmpty()){
-			JLabel lbl = new GUIcompon().LabelContainer(title);
+			JLabel lbl = LabelContainer(title);
 			lbl.setBounds(left+2*res_len, height-title_height, 2*txt_len, title_height);
 			MW.add(lbl);
 		}
-        JTextPane txt1 = TableContainer(false);
+        JTextPane txt1 = TableContainer(true);
         txt1.setBounds(left+2*res_len, height, txt_len, box_height);
         new ResultsOps().SetPlayer(txt1, players[0]);
         MW.add(txt1);
-        JTextPane txt2 = TableContainer(false);
+        JTextPane txt2 = TableContainer(true);
         txt2.setBounds(left+2*res_len+txt_len, height, txt_len, box_height);
         new ResultsOps().SetPlayer(txt2, players[1]);
         MW.add(txt2);

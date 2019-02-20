@@ -5,6 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
@@ -13,7 +17,6 @@ public class SQLiteOps{
 	public Connection SQLconn(String dbName) throws SQLException{
 		//Class.forName("org.sqlite.JDBC");
 		Connection connection = null;
-		//try{
 		//connection = DriverManager.getConnection("jdbc:sqlite::resource:" + dbName);
 		connection = DriverManager.getConnection("jdbc:sqlite:" + dbName);
 		connection.setAutoCommit(false);
@@ -30,64 +33,50 @@ public class SQLiteOps{
 						  "GS_R     INTEGER,\n" +
 						  "N_MATCH  INTEGER     NOT NULL\n" +
 						  ");");
-	    //}catch(SQLException e){
-	    //	System.err.println(e.getMessage());
-	    //}
 		return connection;
 	}
 	
 	public void CloseCnt(Connection cnt) throws SQLException{
-		//try{
-        	if(cnt != null)
-        		cnt.commit();
-        		cnt.close();
-        //}catch(SQLException e){          
-        //   System.err.println(e);
-        //}
+        if(cnt != null){
+       		cnt.commit();
+       		cnt.close();
+        }
 	}
 	
 	public String[] GetPlayers(Connection cnt, String type, int n_match) throws SQLException{
 		String[] players = {"",""};
-		//try{
-			Statement stmt = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			query = "SELECT PLAYER, OPPONENT FROM COPPA WHERE TYPE = '" + type + "' AND N_MATCH = '" + n_match + "'";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				if(rs.getString("PLAYER") != null && !rs.getString("PLAYER").isEmpty())
-					players[0] = rs.getString("PLAYER");
-				if(rs.getString("OPPONENT") != null && !rs.getString("OPPONENT").isEmpty())
-					players[1] = rs.getString("OPPONENT");
-			}
-		//}catch(SQLException e){          
-	    //       System.err.println(e); 
-	    //}
-			return players;
+		Statement stmt = cnt.createStatement();
+		String query;
+		ResultSet rs;
+		query = "SELECT PLAYER, OPPONENT FROM COPPA WHERE TYPE = '"+type+"' AND N_MATCH = '"+n_match+"'";
+		rs = stmt.executeQuery(query);
+		while(rs.next()){
+			if(rs.getString("PLAYER") != null && !rs.getString("PLAYER").isEmpty())
+				players[0] = rs.getString("PLAYER");
+			if(rs.getString("OPPONENT") != null && !rs.getString("OPPONENT").isEmpty())
+				players[1] = rs.getString("OPPONENT");
+		}
+		return players;
 	}
 	
 	public String[] GetResults(Connection cnt, String type, int n_match) throws SQLException{
 		String[] res = {"","","",""};
-		//try{
-			Statement stmt = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			query = "SELECT GF_A, GS_A, GF_R, GS_R FROM COPPA WHERE TYPE = '" + type + "' AND N_MATCH = '" + n_match + "'";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				if(rs.getString("GF_A") != null && !rs.getString("GF_A").isEmpty())
-					res[0] = rs.getString("GF_A");
-				if(rs.getString("GS_A") != null && !rs.getString("GS_A").isEmpty())
-					res[1] = rs.getString("GS_A");
-				if(rs.getString("GF_R") != null && !rs.getString("GF_R").isEmpty())
-					res[2] = rs.getString("GF_R");
-				if(rs.getString("GS_R") != null && !rs.getString("GS_R").isEmpty())
-					res[3] = rs.getString("GS_R");
-			}
-		//}catch(SQLException e){          
-	    //       System.err.println(e); 
-	    //}
-			return res;
+		Statement stmt = cnt.createStatement();
+		String query;
+		ResultSet rs;
+		query = "SELECT GF_A, GS_A, GF_R, GS_R FROM COPPA WHERE TYPE = '"+type+"' AND N_MATCH = '"+n_match+"'";
+		rs = stmt.executeQuery(query);
+		while(rs.next()){
+			if(rs.getString("GF_A") != null && !rs.getString("GF_A").isEmpty())
+				res[0] = rs.getString("GF_A");
+			if(rs.getString("GS_A") != null && !rs.getString("GS_A").isEmpty())
+				res[1] = rs.getString("GS_A");
+			if(rs.getString("GF_R") != null && !rs.getString("GF_R").isEmpty())
+				res[2] = rs.getString("GF_R");
+			if(rs.getString("GS_R") != null && !rs.getString("GS_R").isEmpty())
+				res[3] = rs.getString("GS_R");
+		}
+		return res;
 	}
 	
 	public void UpdateDbRow(Connection cnt, JTextPane[] Jtxt, JTextField[] Jres, String type, int n_match) throws SQLException{
@@ -102,325 +91,87 @@ public class SQLiteOps{
 				+"GS_R='"+res4+"' WHERE TYPE='"+type+"' AND N_MATCH='"+n_match+"'");
 	}
 	
-	public void LoadData(Connection cnt, JTextField[] jtfGroupA, String[] playersA, JTextField[] jtfGroupB, String[] playersB,
-            			 JTextPane sm11Txt, JTextPane sm12Txt, JTextPane sm21Txt, JTextPane sm22Txt,
-            			 JTextField sm11Fld, JTextField sm12Fld, JTextField sm21Fld, JTextField sm22Fld,
-            			 JTextPane fin1Txt, JTextPane fin2Txt, JTextField fin1Fld, JTextField fin2Fld) throws SQLException{
-		//try{
-			Statement stmt  = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			for(int i = 0; i < (jtfGroupA.length / 2); i++){
-				query = "SELECT GF, GS FROM GAMES WHERE PLAYER = '" + playersA[i] + "' AND TYPE = 'A'";
-				rs = stmt.executeQuery(query);
-				while(rs.next()){
-					jtfGroupA[i].setText(rs.getString("GF"));
-					jtfGroupA[i + (jtfGroupA.length / 2)].setText(rs.getString("GS"));
-				}
+	public int CheckVictory(ResultSet resSet, String gfField, String gsField) throws SQLException{
+		int ret = 0;
+		if(!(resSet.getString(gfField) == "" || resSet.getString(gsField) == "")){
+			if(resSet.getInt(gfField) > resSet.getInt(gsField)){
+				ret = 1;
 			}
-			for(int i = 0; i < (jtfGroupB.length / 2); i++){
-				query = "SELECT GF, GS FROM GAMES WHERE PLAYER = '" + playersB[i] + "' AND TYPE = 'B'";
-				rs = stmt.executeQuery(query);
-				while(rs.next()){
-					jtfGroupB[i].setText(rs.getString("GF"));
-					jtfGroupB[i + (jtfGroupB.length / 2)].setText(rs.getString("GS"));
-				}
-			}
-			query = "SELECT * FROM GAMES WHERE TYPE = 'SEMI1'";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				if(rs.getString("PLAYER") != null)
-					new ResultsOps().SetPlayer(sm11Txt, rs.getString("PLAYER"));
-				if(rs.getString("GF") != null)
-					sm11Fld.setText(rs.getString("GF"));
-				if(rs.getString("OPPONENT") != null)
-					new ResultsOps().SetPlayer(sm12Txt, rs.getString("OPPONENT"));
-				if(rs.getString("GS") != null)
-					sm12Fld.setText(rs.getString("GS"));
-			}
-			query = "SELECT * FROM GAMES WHERE TYPE = 'SEMI2'";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				if(rs.getString("PLAYER") != null)
-					new ResultsOps().SetPlayer(sm21Txt, rs.getString("PLAYER"));
-				if(rs.getString("GF") != null)
-					sm21Fld.setText(rs.getString("GF"));
-				if(rs.getString("OPPONENT") != null)
-					new ResultsOps().SetPlayer(sm22Txt, rs.getString("OPPONENT"));
-				if(rs.getString("GS") != null)
-					sm22Fld.setText(rs.getString("GS"));
-			}
-			query = "SELECT * FROM GAMES WHERE TYPE = 'FIN'";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				if(rs.getString("PLAYER") != null)
-					new ResultsOps().SetPlayer(fin1Txt, rs.getString("PLAYER"));
-				if(rs.getString("GF") != null)
-					fin1Fld.setText(rs.getString("GF"));
-				if(rs.getString("OPPONENT") != null)
-					new ResultsOps().SetPlayer(fin2Txt, rs.getString("OPPONENT"));
-				if(rs.getString("GS") != null)
-					fin2Fld.setText(rs.getString("GS"));
-			}
-		//}catch(SQLException e){          
-	    //       System.err.println(e); 
-	    //}
+		}
+		return ret;
 	}
 	
-	public void SQLgroup(Connection cnt, JTextField[] group, String[] players, String type) throws SQLException{
-		//try{
-			Statement stmt = cnt.createStatement();
-			for(int i = 0; i < (group.length / 2); i++){
-				String query = "SELECT * FROM GAMES WHERE PLAYER = '" + players[i] + "' AND TYPE = '" + type + "'";
-				ResultSet rs = stmt.executeQuery(query);
-				if(!rs.isBeforeFirst()){
-					if(!group[i].getText().isEmpty())
-						stmt.executeUpdate("INSERT INTO GAMES (PLAYER, OPPONENT, GF, GS, TYPE)" + 
-				            		   	   "VALUES ('" + players[i] + "', '" + players[(i + 1) % (group.length / 2)] + "', '" +
-				            		   	   group[i].getText() + "', '" + group[i + (group.length / 2)].getText() + "', '" + type + "')");
-				}else{
-					while(rs.next()){
-						if(group[i].getText().isEmpty())
-							stmt.executeUpdate("DELETE FROM GAMES WHERE PLAYER = '" + players[i] + "' AND TYPE = '" + type + "'");
-						else{
-							int res1 = Integer.parseInt(group[i].getText());
-							int res2 = Integer.parseInt(group[i + (group.length / 2)].getText());
-							if((rs.getInt("GF") != res1) || (rs.getInt("GS") != res2))
-								stmt.executeUpdate("UPDATE GAMES SET GF = '" + res1 + "', GS = '" + res2 + "' WHERE PLAYER = '" + players[i] + "'");
-						}
-					}
-				}
+	public int CheckLoss(ResultSet resSet, String gfField, String gsField) throws SQLException{
+		int ret = 0;
+		if(!(resSet.getString(gfField) == "" || resSet.getString(gsField) == "")){
+			if(resSet.getInt(gfField) < resSet.getInt(gsField)){
+				ret = 1;
 			}
-		//}catch(SQLException e){
-	    //	System.err.println(e.getMessage());
-	    //}
+		}
+		return ret;
 	}
 	
-	public String[][] ExtractPlayersVal(Connection cnt, String[] players) throws SQLException{
-		String[][] LeagueTbl = new String[players.length][8];
-		//try{
-			Statement stmt  = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			int gf, gs, g, v, n, p, score;
-			for(int i = 0; i < players.length; i++){
-				gf = 0; gs = 0; g = 0; v = 0; n = 0; p = 0;
-				query = "SELECT GF, GS FROM GAMES WHERE PLAYER = '" + players[i] + "' AND TYPE IN ('A', 'B')";
-				rs = stmt.executeQuery(query);
-				while(rs.next()){
-					g++;
-					if(rs.getInt("GF") > rs.getInt("GS"))
-						v++;
-					else if(rs.getInt("GF") < rs.getInt("GS"))
-						p++;
-					else
-						n++;
-					gf += rs.getInt("GF");
-					gs += rs.getInt("GS");
-				}
-				query = "SELECT GF, GS FROM GAMES WHERE OPPONENT = '" + players[i] + "' AND TYPE IN ('A', 'B')";
-				rs = stmt.executeQuery(query);
-				while(rs.next()){
-					g++;
-					if(rs.getInt("GS") > rs.getInt("GF"))
-						v++;
-					else if(rs.getInt("GS") < rs.getInt("GF"))
-						p++;
-					else
-						n++;
-					gf += rs.getInt("GS");
-					gs += rs.getInt("GF");
-				}
-				score = 3 * v + n;
-				LeagueTbl[i][0] = players[i];
-				LeagueTbl[i][1] = String.valueOf(score);
-				LeagueTbl[i][2] = String.valueOf(g);
-				LeagueTbl[i][3] = String.valueOf(v);
-				LeagueTbl[i][4] = String.valueOf(n);
-				LeagueTbl[i][5] = String.valueOf(p);
-				LeagueTbl[i][6] = String.valueOf(gf);
-				LeagueTbl[i][7] = String.valueOf(gs);
+	public int CheckDraw(ResultSet resSet, String gfField, String gsField) throws SQLException{
+		int ret = 0;
+		if(!(resSet.getString(gfField) == "" || resSet.getString(gsField) == "")){
+			if(resSet.getInt(gfField) == resSet.getInt(gsField)){
+				ret = 1;
 			}
-		//}catch(SQLException e){
-	    //	System.err.println(e.getMessage());
-	    //}
+		}
+		return ret;
+	}
+	
+	public void UpdateMap(ResultSet resSet, String plKey, String gfPl, String gsPl, Map<String, int[]> map) throws SQLException{
+		int[] vals = new int[7];
+		int score, g, v, n, p, gf, gs;
+		String pl;
+		pl = resSet.getString(plKey);
+		v = CheckVictory(resSet, gfPl+"_A", gsPl+"_A") + CheckVictory(resSet, gfPl+"_R", gsPl+"_R");
+		n = CheckDraw(resSet, gfPl+"_A", gsPl+"_A") + CheckDraw(resSet, gfPl+"_R", gsPl+"_R");
+		p = CheckLoss(resSet, gfPl+"_A", gsPl+"_A") + CheckLoss(resSet, gfPl+"_R", gsPl+"_R");
+		gf = resSet.getInt(gfPl+"_A") + resSet.getInt(gfPl+"_R");
+		gs = resSet.getInt(gsPl+"_A") + resSet.getInt(gsPl+"_R");
+		if(map.containsKey(pl)){
+			vals = map.get(pl);
+			g = vals[1] + 1;
+			v += vals[2];
+			n += vals[3];
+			p += vals[4];
+			gf += vals[5];
+			gs += vals[6];
+		}else{
+			g = 1;
+		}
+		score = 3 * v + n;
+		map.put(pl, new int[] {score, g, v, n, p, gf, gs});
+	}
+	
+	public String[][] ExtractPlayersVal(Connection cnt, int n_matches) throws SQLException{
+		Map<String, int[]> LT = new HashMap<>();
+		Statement stmt  = cnt.createStatement();
+		String query;
+		ResultSet rs;
+		for(int i = 1; i <= n_matches; i++){
+			query = "SELECT PLAYER, OPPONENT, GF_A, GS_A, GF_R, GS_R FROM COPPA WHERE TYPE = 'G' AND N_MATCH = "+String.valueOf(i)+
+					" AND PLAYER != '' AND OPPONENT != '' AND ((GF_A >= 0 AND GS_A >= 0) OR (GF_R >= 0 AND GS_R >= 0))";
+			rs = stmt.executeQuery(query);
+			while(rs.next()){
+				UpdateMap(rs, "PLAYER", "GF", "GS", LT);
+				UpdateMap(rs, "OPPONENT", "GS", "GF", LT);
+			}
+		}
+		String[][] LeagueTbl = new String[LT.size()][8];
+		for(int i = 0; i < LT.size(); i++){
+			LeagueTbl[i][0] = players[i];
+			LeagueTbl[i][1] = String.valueOf(score);
+			LeagueTbl[i][2] = String.valueOf(g);
+			LeagueTbl[i][3] = String.valueOf(v);
+			LeagueTbl[i][4] = String.valueOf(n);
+			LeagueTbl[i][5] = String.valueOf(p);
+			LeagueTbl[i][6] = String.valueOf(gf);
+			LeagueTbl[i][7] = String.valueOf(gs);
+		}
 		return LeagueTbl;
-	}
-	
-	public void SQLsemiPlayers(Connection cnt, String[] semiPlayers, JTextPane semi1, JTextPane semi2,
-							   JTextField s1, JTextField s2, String type1, String type2) throws SQLException{
-		new ResultsOps().SetPlayer(semi1, semiPlayers[0]);
-		new ResultsOps().SetPlayer(semi2, semiPlayers[1]);
-		//try{
-			Statement stmt = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			query = "SELECT * FROM GAMES WHERE TYPE = 'SEMI1'";
-			rs = stmt.executeQuery(query);
-			if(!rs.isBeforeFirst()){
-				stmt.executeUpdate("INSERT INTO GAMES (PLAYER, TYPE) VALUES ('" + semiPlayers[0] + "', '" + type1 + "')");
-				stmt.executeUpdate("INSERT INTO GAMES (OPPONENT, TYPE) VALUES ('" + semiPlayers[1] + "', '" + type2 + "')");
-			}else{
-				stmt.executeUpdate("UPDATE GAMES SET PLAYER = '" + semiPlayers[0] + "' WHERE TYPE = '" + type1 + "'");
-				stmt.executeUpdate("UPDATE GAMES SET OPPONENT = '" + semiPlayers[1] + "' WHERE TYPE = '" + type2 + "'");
-			}
-			if(!s1.getText().isEmpty() && s1.getText() != "")
-				stmt.executeUpdate("UPDATE GAMES SET GF = '" + s1.getText() + "' WHERE TYPE = '" + type1 + "'");
-			else
-				stmt.executeUpdate("UPDATE GAMES SET GF = NULL WHERE TYPE = '" + type1 + "'");
-			if(!s2.getText().isEmpty() && s2.getText() != "")
-				stmt.executeUpdate("UPDATE GAMES SET GS = '" + s2.getText() + "' WHERE TYPE = '" + type2 + "'");
-			else
-				stmt.executeUpdate("UPDATE GAMES SET GS = NULL WHERE TYPE = '" + type2 + "'");	
-		//}catch(SQLException e){
-	    //	System.err.println(e.getMessage());
-	    //}
-	}
-	
-	public void UpdateSemi(Connection cnt, String type1, String type2, JTextPane p1, JTextPane p2,
-			               JTextField f1, JTextField f2, JTextField f3, JTextField f4) throws SQLException{
-		//try{
-			Statement stmt = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			query = "SELECT * FROM GAMES WHERE TYPE = 'SEMI1'";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				stmt.executeUpdate("UPDATE GAMES SET PLAYER = NULL WHERE TYPE = '" + type1 + "'");
-				stmt.executeUpdate("UPDATE GAMES SET GF = NULL WHERE TYPE = '" + type1 + "'");
-				stmt.executeUpdate("UPDATE GAMES SET OPPONENT = NULL WHERE TYPE = '" + type2 + "'");
-				stmt.executeUpdate("UPDATE GAMES SET GS = NULL WHERE TYPE = '" + type2 + "'");
-				new ResultsOps().EmptyPlayer(p1);
-				new ResultsOps().EmptyPlayer(p2);
-				f1.setText("");
-				f2.setText("");
-				f3.setText("");
-				f4.setText("");
-			}
-		//}catch(SQLException e){
-	    //	System.err.println(e.getMessage());
-	    //}
-	}
-	
-	public void UpdateFin(Connection cnt, JTextPane p3, JTextPane p4, JTextField f5, JTextField f6) throws SQLException{
-		//try {
-			Statement stmt = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			query = "SELECT * FROM GAMES WHERE TYPE = 'FIN'";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				stmt.executeUpdate("UPDATE GAMES SET PLAYER = NULL WHERE TYPE = 'FIN'");
-				stmt.executeUpdate("UPDATE GAMES SET GF = NULL WHERE TYPE = 'FIN'");
-				stmt.executeUpdate("UPDATE GAMES SET OPPONENT = NULL WHERE TYPE = 'FIN'");
-				stmt.executeUpdate("UPDATE GAMES SET GS = NULL WHERE TYPE = 'FIN'");
-				new ResultsOps().EmptyPlayer(p3);
-				new ResultsOps().EmptyPlayer(p4);
-				f5.setText("");
-				f6.setText("");
-			}
-		//}catch(SQLException e){
-	    //	System.err.println(e.getMessage());
-	    //}
-	}
-	
-	public String[] getFinPlayers(Connection cnt) throws SQLException{
-		String[] plF = {"", ""};
-		//try{
-			Statement stmt = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			query = "SELECT * FROM GAMES WHERE TYPE = 'SEMI1' AND PLAYER IS NOT NULL AND OPPONENT IS NOT NULL "
-					+ "AND GF IS NOT NULL AND GS IS NOT NULL";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				if(rs.getInt("GF") > rs.getInt("GS")){
-					plF[0] = rs.getString("PLAYER");
-				}else if(rs.getInt("GF") < rs.getInt("GS")){
-					plF[0] = rs.getString("OPPONENT");
-				}
-			}
-			query = "SELECT * FROM GAMES WHERE TYPE = 'SEMI2' AND PLAYER IS NOT NULL AND OPPONENT IS NOT NULL "
-					+ "AND GF IS NOT NULL AND GS IS NOT NULL";
-			rs = stmt.executeQuery(query);
-			while(rs.next()){
-				if(rs.getInt("GF") > rs.getInt("GS")){
-					plF[1] = rs.getString("PLAYER");
-				}else if(rs.getInt("GF") < rs.getInt("GS")){
-					plF[1] = rs.getString("OPPONENT");
-				}
-			}
-		//}catch(SQLException e){
-	    //	System.err.println(e.getMessage());
-	    //}
-		return plF;
-	}
-	
-	public void SQLfinPlayers(Connection cnt, JTextPane fin1, JTextPane fin2, JTextField f1, JTextField f2) throws SQLException{
-		String[] finPl = new SQLiteOps().getFinPlayers(cnt);
-		if(finPl[0] != "" && finPl[1] == ""){
-			new ResultsOps().SetPlayer(fin1, finPl[0]);
-			new ResultsOps().EmptyPlayer(fin2);
-			f1.setText("");
-			f2.setText("");
-		}
-		if(finPl[1] != "" && finPl[0] == ""){
-			new ResultsOps().SetPlayer(fin2, finPl[1]);
-			new ResultsOps().EmptyPlayer(fin1);
-			f1.setText("");
-			f2.setText("");
-		}
-		if(finPl[0] != "" && finPl[1] != ""){
-			new ResultsOps().SetPlayer(fin1, finPl[0]);
-			new ResultsOps().SetPlayer(fin2, finPl[1]);
-		}
-		if(finPl[0] == "" && finPl[1] == ""){
-			new ResultsOps().EmptyPlayer(fin1);
-			new ResultsOps().EmptyPlayer(fin2);
-			f1.setText("");
-			f2.setText("");
-		}	
-		//try{
-			Statement stmt = cnt.createStatement();
-			String query;
-			ResultSet rs;
-			query = "SELECT * FROM GAMES WHERE TYPE = 'FIN'";
-			rs = stmt.executeQuery(query);
-			if(!rs.isBeforeFirst()){
-				if(finPl[0] != "" && finPl[1] == "")
-					stmt.executeUpdate("INSERT INTO GAMES (PLAYER, TYPE) VALUES ('" + finPl[0] + "', 'FIN')");
-				if(finPl[1] != "" && finPl[0] == "")
-					stmt.executeUpdate("INSERT INTO GAMES (OPPONENT, TYPE) VALUES ('" + finPl[1] + "', 'FIN')");
-				if(finPl[0] != "" && finPl[1] != "")
-					stmt.executeUpdate("INSERT INTO GAMES (PLAYER, OPPONENT, TYPE) VALUES ('" + finPl[0] + "', '" + finPl[1] + "', 'FIN')");
-			}else{
-				if(finPl[0] != "" && finPl[1] == ""){
-					stmt.executeUpdate("UPDATE GAMES SET PLAYER = '" + finPl[0] + "' WHERE TYPE = 'FIN'");
-					stmt.executeUpdate("UPDATE GAMES SET OPPONENT = NULL WHERE TYPE = 'FIN'");
-				}
-				if(finPl[1] != "" && finPl[0] == ""){
-					stmt.executeUpdate("UPDATE GAMES SET OPPONENT = '" + finPl[1] + "' WHERE TYPE = 'FIN'");
-					stmt.executeUpdate("UPDATE GAMES SET PLAYER = NULL WHERE TYPE = 'FIN'");
-				}
-				if(finPl[0] != "" && finPl[1] != ""){
-					stmt.executeUpdate("UPDATE GAMES SET OPPONENT = '" + finPl[1] + "' WHERE TYPE = 'FIN'");
-					stmt.executeUpdate("UPDATE GAMES SET PLAYER = '" + finPl[0] + "' WHERE TYPE = 'FIN'");
-				}
-				if(finPl[0] == "" && finPl[1] == ""){
-					stmt.executeUpdate("UPDATE GAMES SET PLAYER = NULL WHERE TYPE = 'FIN'");
-					stmt.executeUpdate("UPDATE GAMES SET OPPONENT = NULL WHERE TYPE = 'FIN'");
-				}
-			}
-			if(!f1.getText().isEmpty() && f1.getText() != ""){
-				stmt.executeUpdate("UPDATE GAMES SET GF = '" + f1.getText() + "' WHERE TYPE = 'FIN'");
-				stmt.executeUpdate("UPDATE GAMES SET GS = '" + f2.getText() + "' WHERE TYPE = 'FIN'");
-			}else{
-				stmt.executeUpdate("UPDATE GAMES SET GF = NULL WHERE TYPE = 'FIN'");
-				stmt.executeUpdate("UPDATE GAMES SET GS = NULL WHERE TYPE = 'FIN'");
-			}
-		//}catch(SQLException e){
-	    //	System.err.println(e.getMessage());
-	    //}
 	}
 
 }
