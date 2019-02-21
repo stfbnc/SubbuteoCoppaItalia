@@ -161,15 +161,20 @@ public class SQLiteOps{
 			}
 		}
 		String[][] LeagueTbl = new String[LT.size()][8];
-		for(int i = 0; i < LT.size(); i++){
-			LeagueTbl[i][0] = players[i];
-			LeagueTbl[i][1] = String.valueOf(score);
-			LeagueTbl[i][2] = String.valueOf(g);
-			LeagueTbl[i][3] = String.valueOf(v);
-			LeagueTbl[i][4] = String.valueOf(n);
-			LeagueTbl[i][5] = String.valueOf(p);
-			LeagueTbl[i][6] = String.valueOf(gf);
-			LeagueTbl[i][7] = String.valueOf(gs);
+		Set entries = LT.entrySet();
+		Iterator entriesIterator = entries.iterator();
+		int i = 0;
+		while(entriesIterator.hasNext()){
+			Map.Entry mapping = (Map.Entry) entriesIterator.next();
+			LeagueTbl[i][0] = mapping.getKey();
+			LeagueTbl[i][1] = String.valueOf(mapping.getValue()[0]);
+			LeagueTbl[i][2] = String.valueOf(mapping.getValue()[1]);
+			LeagueTbl[i][3] = String.valueOf(mapping.getValue()[2]);
+			LeagueTbl[i][4] = String.valueOf(mapping.getValue()[3]);
+			LeagueTbl[i][5] = String.valueOf(mapping.getValue()[4]);
+			LeagueTbl[i][6] = String.valueOf(mapping.getValue()[5]);
+			LeagueTbl[i][7] = String.valueOf(mapping.getValue()[6]);
+			i++;
 		}
 		return LeagueTbl;
 	}
