@@ -50,26 +50,25 @@ public class ResultsOps{
 		return chk;
 	}
 	
-	public boolean CheckG(String[][] LeagueTbl){
-		boolean chkG = true;
+	public boolean CheckLeagueTable(String[][] LeagueTbl){
+		boolean chkLT = true;
 		for(int i = 0; i < LeagueTbl.length; i++){
 			if(Integer.valueOf(LeagueTbl[i][2]) != (LeagueTbl.length - 1)){
-				chkG = false;
+				chkLT = false;
 				break;
 			}
 		}
-		return chkG;
+		return chkLT;
 	}
 	
 	public void LeagueTable(JTextPane pane, String[][] LeagueTbl){
 		//scontri diretti
 		Comparator<String[]> comparator = Comparator.comparing(x -> x[1]);
 		Arrays.sort(LeagueTbl, comparator.thenComparing(x -> (Integer.valueOf(x[6])-Integer.valueOf(x[7])))
-					.thenComparing(x -> x[6]).reversed());
-		//String[] FirstTwoAndCheck = new String[3];
-		//FirstTwoAndCheck[0] = LeagueTbl[0][0];
-		//FirstTwoAndCheck[1] = LeagueTbl[1][0];
-		//FirstTwoAndCheck[2] = new ResultsOps().CheckG(LeagueTbl);
+					.thenComparing(x -> x[6]).reversed().thenComparing(x -> x[0]));
+		if(CheckLeagueTable(LeagueTbl)){
+			//scontri diretti
+		}
 		String html = "<html><font face=\"Serif\" ><table style=\"width:100%\"; align=\"left\">" +
 		   "<tr><th> </th><th align=\"left\">Squadra</th><th align=\"left\">P</th><th align=\"left\">G</th>" +
 		   "<th align=\"left\">V</th><th align=\"left\">N</th><th align=\"left\">P</th><th align=\"left\">GF</th>" +
@@ -84,7 +83,6 @@ public class ResultsOps{
 		html += "</table></font></html>";
 		pane.setContentType("text/html");
         pane.setText(html);
-        //return FirstTwoAndCheck;
 	}
 
 }
