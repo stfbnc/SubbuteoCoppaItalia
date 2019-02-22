@@ -32,7 +32,7 @@ public class Coppa{
     public void CoppaGUI() throws SQLException{
     	
     	final int startX = 375;
-    	final int startY = 250;
+    	final int startY = 220;
     	final int yHeight = 25;
     	String[] players = new String[2];
     	String[] results = new String[4];
@@ -81,13 +81,15 @@ public class Coppa{
         JTextField[] resGirone6 = new GUIcompon().MatchResults(main_window, startX, startY+5*yHeight, results, 0);
         JTextPane[] txtGirone6 = new GUIcompon().MatchPlayers(main_window, startX, startY+5*yHeight, players, "");
         JTextPane Table = new GUIcompon().TableContainer(false);
-        Table.setBounds(startX, startY+6*yHeight, 4*30+2*140, 4*yHeight);
+        Table.setBounds(startX, startY+6*yHeight, 4*30+2*140, 5*yHeight);
         main_window.add(Table);
         //########################################################################FINALE
         players = new SQLiteOps().GetPlayers(conn, dbTypes.get("FIN"), 1);
         results = new SQLiteOps().GetResults(conn, dbTypes.get("FIN"), 1);
         JTextField[] resFinale = new GUIcompon().MatchResults(main_window, 655, 640, results, 1);
         JTextPane[] txtFinale = new GUIcompon().MatchPlayers(main_window, 655, 640, players, "FINALE");
+        //########################################################################CLASSIFICA
+		new ResultsOps().LeagueTable(Table, new SQLiteOps().ExtractPlayersVal(conn, 6));
         //close connection
         new SQLiteOps().CloseCnt(conn);
         //########################################################################BOTTONE AGGIORNA
@@ -122,7 +124,7 @@ public class Coppa{
 						new SQLiteOps().UpdateDbRow(conn, txtGirone5, resGirone5, dbTypes.get("GIR"), 5);
 						new SQLiteOps().UpdateDbRow(conn, txtGirone6, resGirone6, dbTypes.get("GIR"), 6);
 						new SQLiteOps().UpdateDbRow(conn, txtFinale, resFinale, dbTypes.get("FIN"), 1);
-						//la classifica legge dal database
+						new ResultsOps().LeagueTable(Table, new SQLiteOps().ExtractPlayersVal(conn, 6));
 	            		new SQLiteOps().CloseCnt(conn);
             		}catch (Exception e1){
             			e1.printStackTrace();

@@ -36,10 +36,10 @@ public class ResultsOps{
 				chk = false;
 		}
 		//check for a single empty value in a player couple
-		String pl1 = NoHtmlText(players[0].getText(), "td");
-		String pl2 = NoHtmlText(players[1].getText(), "td");
-		if((pl1.isEmpty() || pl1 == "") ^ (pl2.isEmpty() || pl2 == ""))
-			chk = false;
+		//String pl1 = NoHtmlText(players[0].getText(), "td");
+		//String pl2 = NoHtmlText(players[1].getText(), "td");
+		//if((pl1.isEmpty() || pl1 == "") ^ (pl2.isEmpty() || pl2 == ""))
+		//	chk = false;
 		//check for non numeric strings
 		if(chk){
 			for(int i = 0; i < res.length; i++){
@@ -62,10 +62,9 @@ public class ResultsOps{
 	}
 	
 	public void LeagueTable(JTextPane pane, String[][] LeagueTbl){
-		//scontri diretti
-		Comparator<String[]> comparator = Comparator.comparing(x -> x[1]);
+		Comparator<String[]> comparator = Comparator.comparing(x -> Integer.valueOf(x[1]));
 		Arrays.sort(LeagueTbl, comparator.thenComparing(x -> (Integer.valueOf(x[6])-Integer.valueOf(x[7])))
-					.thenComparing(x -> x[6]).reversed().thenComparing(x -> x[0]));
+					.thenComparing(x -> Integer.valueOf(x[6])).reversed().thenComparing(x -> x[0]));
 		if(CheckLeagueTable(LeagueTbl)){
 			//scontri diretti
 		}

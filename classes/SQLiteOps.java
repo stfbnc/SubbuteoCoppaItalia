@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -93,9 +95,11 @@ public class SQLiteOps{
 	
 	public int CheckVictory(ResultSet resSet, String gfField, String gsField) throws SQLException{
 		int ret = 0;
-		if(!(resSet.getString(gfField) == "" || resSet.getString(gsField) == "")){
-			if(resSet.getInt(gfField) > resSet.getInt(gsField)){
-				ret = 1;
+		if(resSet.getString(gfField) != "" && resSet.getString(gsField) != ""){
+			if(!resSet.getString(gfField).isEmpty() && !resSet.getString(gsField).isEmpty()){
+				if(resSet.getInt(gfField) > resSet.getInt(gsField)){
+					ret = 1;
+				}
 			}
 		}
 		return ret;
@@ -103,9 +107,11 @@ public class SQLiteOps{
 	
 	public int CheckLoss(ResultSet resSet, String gfField, String gsField) throws SQLException{
 		int ret = 0;
-		if(!(resSet.getString(gfField) == "" || resSet.getString(gsField) == "")){
-			if(resSet.getInt(gfField) < resSet.getInt(gsField)){
-				ret = 1;
+		if(resSet.getString(gfField) != "" && resSet.getString(gsField) != ""){
+			if(!resSet.getString(gfField).isEmpty() && !resSet.getString(gsField).isEmpty()){
+				if(resSet.getInt(gfField) < resSet.getInt(gsField)){
+					ret = 1;
+				}
 			}
 		}
 		return ret;
@@ -113,8 +119,20 @@ public class SQLiteOps{
 	
 	public int CheckDraw(ResultSet resSet, String gfField, String gsField) throws SQLException{
 		int ret = 0;
-		if(!(resSet.getString(gfField) == "" || resSet.getString(gsField) == "")){
-			if(resSet.getInt(gfField) == resSet.getInt(gsField)){
+		if(resSet.getString(gfField) != "" && resSet.getString(gsField) != ""){
+			if(!resSet.getString(gfField).isEmpty() && !resSet.getString(gsField).isEmpty()){
+				if(resSet.getInt(gfField) == resSet.getInt(gsField)){
+					ret = 1;
+				}
+			}
+		}
+		return ret;
+	}
+	
+	public int CheckGames(ResultSet resSet, String gfField, String gsField) throws SQLException{
+		int ret = 0;
+		if(resSet.getString(gfField) != "" && resSet.getString(gsField) != ""){
+			if(!resSet.getString(gfField).isEmpty() && !resSet.getString(gsField).isEmpty()){
 				ret = 1;
 			}
 		}
@@ -126,6 +144,7 @@ public class SQLiteOps{
 		int score, g, v, n, p, gf, gs;
 		String pl;
 		pl = resSet.getString(plKey);
+		g = CheckGames(resSet, gfPl+"_A", gsPl+"_A") + CheckGames(resSet, gfPl+"_R", gsPl+"_R");
 		v = CheckVictory(resSet, gfPl+"_A", gsPl+"_A") + CheckVictory(resSet, gfPl+"_R", gsPl+"_R");
 		n = CheckDraw(resSet, gfPl+"_A", gsPl+"_A") + CheckDraw(resSet, gfPl+"_R", gsPl+"_R");
 		p = CheckLoss(resSet, gfPl+"_A", gsPl+"_A") + CheckLoss(resSet, gfPl+"_R", gsPl+"_R");
@@ -133,14 +152,12 @@ public class SQLiteOps{
 		gs = resSet.getInt(gsPl+"_A") + resSet.getInt(gsPl+"_R");
 		if(map.containsKey(pl)){
 			vals = map.get(pl);
-			g = vals[1] + 1;
+			g += vals[1];
 			v += vals[2];
 			n += vals[3];
 			p += vals[4];
 			gf += vals[5];
 			gs += vals[6];
-		}else{
-			g = 1;
 		}
 		score = 3 * v + n;
 		map.put(pl, new int[] {score, g, v, n, p, gf, gs});
@@ -153,7 +170,7 @@ public class SQLiteOps{
 		ResultSet rs;
 		for(int i = 1; i <= n_matches; i++){
 			query = "SELECT PLAYER, OPPONENT, GF_A, GS_A, GF_R, GS_R FROM COPPA WHERE TYPE = 'G' AND N_MATCH = "+String.valueOf(i)+
-					" AND PLAYER != '' AND OPPONENT != '' AND ((GF_A >= 0 AND GS_A >= 0) OR (GF_R >= 0 AND GS_R >= 0))";
+					" AND PLAYER != '' AND OPPONENT != ''";
 			rs = stmt.executeQuery(query);
 			while(rs.next()){
 				UpdateMap(rs, "PLAYER", "GF", "GS", LT);
@@ -165,7 +182,8 @@ public class SQLiteOps{
 		Iterator entriesIterator = entries.iterator();
 		int i = 0;
 		while(entriesIterator.hasNext()){
-			Map.Entry mapping = (Map.Entry) entriesIterator.next();
+			@SuppressWarnings("unchecked")
+			Map.Entry<String, int[]> mapping = (Map.Entry<String, int[]>) entriesIterator.next();
 			LeagueTbl[i][0] = mapping.getKey();
 			LeagueTbl[i][1] = String.valueOf(mapping.getValue()[0]);
 			LeagueTbl[i][2] = String.valueOf(mapping.getValue()[1]);
